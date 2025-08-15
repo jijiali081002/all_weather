@@ -135,7 +135,7 @@ def main():
 account=TqKq()
 api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
 #api=TqApi(account=account,auth=TqAuth("ljj_test","ljj_test"))
-print([account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
+main()
 api.close()
 print('end')
 end=time()
