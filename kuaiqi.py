@@ -117,26 +117,26 @@ def main():
                     if api.is_changing(quote):
                         if mainforce.iloc[-1,1]!=mainforce.iloc[-2,1]:
                             print(f'{item}需要换月，先平仓{mainforce.iloc[-2,1]}，再开仓{mainforce.iloc[-1,1]}')
-                            #put=TargetPosTask(api, mainforce.iloc[-2,1])
-                            #put.set_target_volume(0)
+                            put=TargetPosTask(api, mainforce.iloc[-2,1])
+                            put.set_target_volume(0)
                         volume=weights.loc[item,0]*account.get_account().static_balance/(quote.last_price*quote.volume_multiple)
-                        #call=TargetPosTask(api, quote.underlying_symbol)
-                        #call.set_target_volume(np.round(volume,0))
+                        call=TargetPosTask(api, quote.underlying_symbol)
+                        call.set_target_volume(np.round(volume,0))
                         print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
             count=count+1
         print([account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
-        #if datetime.now().hour>15:
-            #blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
-            #data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
-            #index_pos=data.index[data['日期']==datetime.today().date().strftime('%Y-%m-%d')].to_list()[0]
-            #with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
-                #pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+2,startcol=1,index=None,header=None)
+        if datetime.now().hour>15:
+            blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
+            data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
+            index_pos=data.index[data['日期']==datetime.today().date().strftime('%Y-%m-%d')].to_list()[0]
+            with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
+                pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+2,startcol=1,index=None,header=None)
 
 account=TqKq()
-#api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
-api=TqApi(account=account,auth=TqAuth("ljj_test","ljj_test"))
+api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
 main()
 api.close()
 print('end')
 end=time()
+
 print(f'{end-start}s')
