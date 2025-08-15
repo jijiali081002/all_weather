@@ -1,0 +1,5 @@
+riskfolio-lib
+numpy
+pandas
+tqsdk
+openpyxl
