@@ -2,11 +2,10 @@ name: run kuaiqi
 
 on:
   schedule:
-    # GitHub Actions 使用 UTC；下面三条分别对应北京时间 09:00、09:30、21:00
-    - cron: '0 1 * * *'    # 09:00 Beijing
-    - cron: '30 1 * * *'   # 09:30 Beijing
-    - cron: '0 13 * * *'   # 21:00 Beijing
-  workflow_dispatch:        # 允许在 Actions 页手动触发
+    - cron: '0 1 * * *'    # 北京 09:00
+    - cron: '30 1 * * *'   # 北京 09:30
+    - cron: '0 13 * * *'   # 北京 21:00
+  workflow_dispatch:
 
 jobs:
   run:
@@ -15,6 +14,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}  # 必须有这个才能推回仓库
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -23,23 +24,15 @@ jobs:
           cache: 'pip'
 
       - name: Install dependencies
-        run: |
-          pip install -r requirements.txt
+        run: pip install -r requirements.txt
 
       - name: Run script
         run: python kuaiqi.py
 
-      # （可选）如果脚本会把 kuaiqi.xlsx 写出新内容，保存成构件以便下载查看
-      - name: Upload updated excel
-        if: always()  # 不论成功失败都上传，方便排错
-        uses: actions/upload-artifact@v4
-        with:
-          name: kuaiqi-output
-          path: |
-            kuaiqi.xlsx
-          if-no-files-found: ignore
-
-    # 防止 09:00 还没跑完就到 09:30 导致重叠
-    concurrency:
-      group: run-kuaiqi
-      cancel-in-progress: true
+      - name: Commit and push updated Excel
+        run: |
+          git config --global user.name "github-actions[bot]"
+          git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git add kuaiqi.xlsx
+          git commit -m "Update kuaiqi.xlsx [skip ci]" || echo "No changes to commit"
+          git push
