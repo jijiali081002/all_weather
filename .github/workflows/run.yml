@@ -5,6 +5,7 @@ on:
     # GitHub Actions 使用 UTC；下面三条分别对应北京时间 09:00、09:30、21:00
     - cron: '0 1 * * *'    # 09:00 Beijing
     - cron: '30 1 * * *'   # 09:30 Beijing
+    - cron: '10 9 * * *'   # 09:30 Beijing
     - cron: '0 13 * * *'   # 21:00 Beijing
   workflow_dispatch:        # 允许在 Actions 页手动触发
 
