@@ -13,9 +13,10 @@ jobs:
     timeout-minutes: 20
 
     steps:
+      # 必须加 token 才能 push 回仓库
       - uses: actions/checkout@v4
         with:
-          token: ${{ secrets.GITHUB_TOKEN }}  # 必须有这个才能推回仓库
+          token: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -36,3 +37,7 @@ jobs:
           git add kuaiqi.xlsx
           git commit -m "Update kuaiqi.xlsx [skip ci]" || echo "No changes to commit"
           git push
+
+    concurrency:
+      group: run-kuaiqi
+      cancel-in-progress: true
