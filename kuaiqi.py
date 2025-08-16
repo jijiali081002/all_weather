@@ -103,7 +103,8 @@ def final_weight(pre_leverage, post_leverage, rm, method_cov):
 
 def main():
     cld=api.get_trading_calendar(start_dt=datetime.now()-timedelta(days=3), end_dt=datetime.now())
-    if cld.trading.to_list()[-1]:
+    if True:
+    #if cld.trading.to_list()[-1]:
         weights=final_weight(True, True, 'MV', 'hist')
         count=0
         while api.wait_update() and count<100:
@@ -125,12 +126,14 @@ def main():
                         print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
             count=count+1
         print([account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
-        if datetime.now().hour>15:
+        #if datetime.now().hour>15:
+        if True:
             blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
             data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
             index_pos=data.index[data['日期']==datetime.today().date().strftime('%Y-%m-%d')].to_list()[0]
             with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
                 pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+2,startcol=1,index=None,header=None)
+            print('已写入')
 
 account=TqKq()
 api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
