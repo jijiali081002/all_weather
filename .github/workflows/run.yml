@@ -13,7 +13,7 @@ jobs:
     timeout-minutes: 20
 
     steps:
-      # 必须加 token 才能 push 回仓库
+      # 用具备写权限的 token 签出代码，方便后续 push
       - uses: actions/checkout@v4
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
@@ -30,14 +30,17 @@ jobs:
       - name: Run script
         run: python kuaiqi.py
 
+      # 先同步远程（防止 'fetch first'），再提交并推送更新后的 Excel
       - name: Commit and push updated Excel
         run: |
           git config --global user.name "github-actions[bot]"
           git config --global user.email "github-actions[bot]@users.noreply.github.com"
+          git pull origin main --rebase
           git add kuaiqi.xlsx
           git commit -m "Update kuaiqi.xlsx [skip ci]" || echo "No changes to commit"
           git push
 
+    # 防止 9:00 和 9:30 任务重叠
     concurrency:
       group: run-kuaiqi
       cancel-in-progress: true
