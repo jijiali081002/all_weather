@@ -103,8 +103,7 @@ def final_weight(pre_leverage, post_leverage, rm, method_cov):
 
 def main():
     cld=api.get_trading_calendar(start_dt=datetime.now()-timedelta(days=3), end_dt=datetime.now())
-    if True:
-    #if cld.trading.to_list()[-1]:
+    if cld.trading.to_list()[-1]:
         weights=final_weight(True, True, 'MV', 'hist')
         count=0
         while api.wait_update() and count<100:
@@ -126,8 +125,7 @@ def main():
                         print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
             count=count+1
         print([account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
-        #if datetime.now().hour>15:
-        if True:
+        if datetime.now().hour>15:
             blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
             data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
             index_pos=data.index[data['日期']==datetime.today().date().strftime('%Y-%m-%d')].to_list()[0]
@@ -143,3 +141,4 @@ api.close()
 print('end')
 end=time()
 print(f'{end-start}s')
+
