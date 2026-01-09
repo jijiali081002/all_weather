@@ -102,6 +102,7 @@ def final_weight(pre_leverage, post_leverage, rm, method_cov):
     return result
 
 def main():
+    print([account.get_account().pre_balance,account.get_account().balance])
     cld=api.get_trading_calendar(start_dt=datetime.now()-timedelta(days=3), end_dt=datetime.now())
     if cld.trading.to_list()[-1]:
         weights=final_weight(True, True, 'MV', 'hist')
@@ -130,7 +131,7 @@ def main():
             data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
             index_pos=data.index[data['日期']==datetime.today().date().strftime('%Y-%m-%d')].to_list()[0]
             with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
-                pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+2,startcol=1,index=None,header=None)
+                pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+1,startcol=1,index=None,header=None)
             print('已写入')
 
 account=TqKq()
@@ -141,4 +142,3 @@ api.close()
 print('end')
 end=time()
 print(f'{end-start}s')
-
