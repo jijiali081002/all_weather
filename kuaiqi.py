@@ -129,7 +129,7 @@ def main():
         if datetime.now().hour>15:
             blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
             data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
-            index_pos=data.index[data['日期']==datetime.today().date().strftime('%Y-%m-%d')].to_list()[0]
+            index_pos=data.index[data['日期']==datetime.today().date()].to_list()[0]
             with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
                 pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+1,startcol=1,index=None,header=None)
             print('已写入')
@@ -142,3 +142,4 @@ api.close()
 print('end')
 end=time()
 print(f'{end-start}s')
+
