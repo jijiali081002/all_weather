@@ -131,8 +131,8 @@ def main():
         if datetime.now().hour>15:
             data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
             data['日期']=pd.to_datetime(data['日期'],errors='coerce')
-            dat= data.sort_values('日期').reset_index(drop=True)
-            index_pos = data['日期'].searchsorted(pd.Timestamp.now().normalize(),side='left')
+            data=data.sort_values('日期').reset_index(drop=True)
+            index_pos=data['日期'].searchsorted(pd.Timestamp.now().normalize(),side='left')
             print(f'开始写入{pd.Timestamp.now().normalize()}的净值与持仓，写入第{index_pos+1}行')
             with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
                 pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+1,startcol=1,index=None,header=None)
@@ -146,3 +146,4 @@ api.close()
 print('end')
 end=time()
 print(f'{end-start}s')
+
