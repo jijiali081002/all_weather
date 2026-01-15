@@ -3,7 +3,7 @@ from __future__ import print_function, absolute_import
 import riskfolio
 import numpy as np
 import pandas as pd
-from time import time
+from time import time,sleep
 from datetime import datetime,timedelta
 from tqsdk import TqApi, TqAuth, TqKq, TargetPosTask
 import warnings
@@ -125,6 +125,7 @@ def main():
                         call.set_target_volume(np.round(volume,0))
                         print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
             count=count+1
+            sleep(1)
         print([account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
         if datetime.now().hour>15:
             blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
@@ -145,6 +146,7 @@ api.close()
 print('end')
 end=time()
 print(f'{end-start}s')
+
 
 
 
