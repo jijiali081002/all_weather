@@ -126,14 +126,14 @@ def main():
                         print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
             count=count+1
             sleep(1)
-        print([account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
+        blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
+        print(blc_pst)
         if datetime.now().hour>15:
-            blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
             data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
-            data['日期'] = pd.to_datetime(data['日期'], errors='coerce')
-            data = data.sort_values('日期').reset_index(drop=True)
-            target = pd.Timestamp.now().normalize()
-            index_pos = data['日期'].searchsorted(target, side='left')
+            data['日期']=pd.to_datetime(data['日期'],errors='coerce')
+            dat= data.sort_values('日期').reset_index(drop=True)
+            index_pos = data['日期'].searchsorted(pd.Timestamp.now().normalize(),side='left')
+            print(f'开始写入{pd.Timestamp.now().normalize()}的净值与持仓，写入第{index_pos+1}行')
             with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
                 pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+1,startcol=1,index=None,header=None)
             print('已写入')
@@ -146,7 +146,3 @@ api.close()
 print('end')
 end=time()
 print(f'{end-start}s')
-
-
-
-
