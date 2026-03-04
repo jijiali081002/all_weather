@@ -16,6 +16,7 @@ target_var=0.15
 risk_budget=np.array([0.25, 0.25, 0.25, 0.25])
 assets=['CFFEX.IF','CFFEX.IC','CFFEX.IM','CFFEX.T','SHFE.AU','INE.SC','SHFE.RB','DCE.I','SHFE.CU','SHFE.AG','SHFE.AL','DCE.P','SHFE.NI','DCE.Y','DCE.M','SHFE.RU','CZCE.TA','CZCE.SA','CZCE.OI','CZCE.MA','CZCE.CF','CZCE.FG','DCE.V','SHFE.ZN','DCE.J','SHFE.FU','CZCE.SR','CZCE.AP','DCE.PP','DCE.EG','CZCE.RM','DCE.L','DCE.JM','DCE.A']
 symbols=['KQ.m@'+item if item.split('.')[0]=='CFFEX' or item.split('.')[0]=='CZCE' else 'KQ.m@'+item.split('.')[0]+'.'+item.split('.')[1].lower() for item in assets]
+commodity_weights_raw=pd.read_excel('kuaiqi.xlsx',sheet_name='weights',usecols='A:M',nrows=30,skiprows=0).set_index('代码')
 
 def return_i():
     raw_returns=[]
@@ -28,7 +29,6 @@ def return_i():
     returns=pd.concat(raw_returns,axis=1,join='outer').sort_index().fillna(0)
     returns.index=[item.date() for item in pd.to_datetime(returns.index)]
     returns.columns=assets
-    commodity_weights_raw=pd.read_excel('kuaiqi.xlsx',sheet_name='weights',usecols='A:M',nrows=30,skiprows=0).set_index('代码')
     commodity_weights=pd.DataFrame(np.zeros((returns.shape[0],commodity_weights_raw.shape[0])),index=returns.index,columns=commodity_weights_raw.index)
     for date in commodity_weights.index:
         commodity_weights.loc[date,:]=commodity_weights_raw.loc[:,date.year] if date.month>=6 else commodity_weights_raw.loc[:,date.year-1]
@@ -140,18 +140,9 @@ def main():
     else:
         print('非交易日，不调仓')
 
-try:
-    account=TqKq()
-    api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
-except Exception as e:
-    print(e)
-    sleep(1)
-    account=TqKq()
-    api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
-    main()
-else:
-    main()
-#api=TqApi(account=account,auth=TqAuth("ljj_test","ljj_test"))
+account=TqKq()
+api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
+main()
 api.close()
 print('end')
 end=time()
