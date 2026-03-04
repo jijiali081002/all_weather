@@ -137,13 +137,22 @@ def main():
             with pd.ExcelWriter('kuaiqi.xlsx',engine='openpyxl',mode='a',if_sheet_exists='overlay') as writer:
                 pd.DataFrame(blc_pst).T.to_excel(writer,sheet_name='account',startrow=index_pos+1,startcol=1,index=None,header=None)
             print('已写入')
+    else:
+        print('非交易日，不调仓')
 
-account=TqKq()
-api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
+try:
+    account=TqKq()
+    api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
+except Exception as e:
+    print(e)
+    sleep(1)
+    account=TqKq()
+    api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
+    main()
+else:
+    main()
 #api=TqApi(account=account,auth=TqAuth("ljj_test","ljj_test"))
-main()
 api.close()
 print('end')
 end=time()
-print(f'{end-start}s')
-
+print(f'调仓结束，共用时{end-start}s')
