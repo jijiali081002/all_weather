@@ -14,9 +14,9 @@ lag_return=126
 lag_var=126
 target_var=0.15
 risk_budget=np.array([0.25, 0.25, 0.25, 0.25])
-assets=['CFFEX.IF','CFFEX.IC','CFFEX.IM','CFFEX.T','SHFE.AU','INE.SC','SHFE.RB','DCE.I','SHFE.CU','SHFE.AG','SHFE.AL','DCE.P','SHFE.NI','DCE.Y','DCE.M','SHFE.RU','CZCE.TA','CZCE.SA','CZCE.OI','CZCE.MA','CZCE.CF','CZCE.FG','DCE.V','SHFE.ZN','DCE.J','SHFE.FU','CZCE.SR','CZCE.AP','DCE.PP','DCE.EG','CZCE.RM','DCE.L','DCE.JM','DCE.A']
+assets=['CFFEX.IF','CFFEX.IC','CFFEX.IM','CFFEX.T','SHFE.AU','INE.SC','SHFE.RB','DCE.I','SHFE.CU','SHFE.AG','SHFE.AL','DCE.P','SHFE.NI','DCE.Y','DCE.M','SHFE.RU','CZCE.TA','CZCE.SA','CZCE.OI','CZCE.MA','CZCE.CF','CZCE.FG','DCE.V','SHFE.ZN','DCE.J','SHFE.FU','CZCE.SR','CZCE.AP','DCE.PP','DCE.EG','CZCE.RM','DCE.L','DCE.JM','DCE.A','GFEX.LC','SHFE.SN']
 symbols=['KQ.m@'+item if item.split('.')[0]=='CFFEX' or item.split('.')[0]=='CZCE' else 'KQ.m@'+item.split('.')[0]+'.'+item.split('.')[1].lower() for item in assets]
-commodity_weights_raw=pd.read_excel('kuaiqi.xlsx',sheet_name='weights',usecols='A:M',nrows=30,skiprows=0).set_index('代码')
+commodity_weights_raw=pd.read_excel('kuaiqi.xlsx',sheet_name='weights',usecols='A:N',nrows=32,skiprows=0).set_index('代码')
 
 def return_i():
     raw_returns=[]
