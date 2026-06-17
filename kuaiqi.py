@@ -99,10 +99,14 @@ def final_weight(pre_leverage, post_leverage, rm, method_cov):
     result.iloc[3,0]=final_weights.iloc[-1,1]
     result.iloc[4,0]=final_weights.iloc[-1,3]
     result.iloc[5:,0]=final_weights.iloc[-1,2]*return_i()[1].iloc[-1,:]
+    print('实际持仓权重明细如下：')
+    print(result)
     return result
 
 def main():
     print([account.get_account().pre_balance,account.get_account().balance])
+    print([account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
+    print([account.get_position()]
     cld=api.get_trading_calendar(start_dt=datetime.now()-timedelta(days=3), end_dt=datetime.now())
     if cld.trading.to_list()[-1]:
         weights=final_weight(True, True, 'MV', 'hist')
@@ -125,10 +129,10 @@ def main():
                         call.set_target_volume(np.round(volume,0))
                         print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
             count=count+1
-            sleep(1)
+            sleep(2)
         blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
         print(blc_pst)
-        if datetime.now().hour>15:
+        if datetime.now().hour>15 or datetime.now().hour<5:
             data=pd.read_excel('kuaiqi.xlsx',sheet_name='account',usecols='A:AJ')
             data['日期']=pd.to_datetime(data['日期'],errors='coerce')
             data=data.sort_values('日期').reset_index(drop=True)
