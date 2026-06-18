@@ -2,9 +2,9 @@ name: run kuaiqi
 
 on:
   schedule:
-    - cron: '1 1 * * 1-5'    # 北京 09:00
-    - cron: '31 1 * * 1-5'   # 北京 09:30
-    - cron: '1 13 * * 1-5'   # 北京 21:00
+    - cron: '1 0 * * 1-5'    # 北京 09:00
+    - cron: '31 0 * * 1-5'   # 北京 09:30
+    - cron: '1 12 * * 1-5'   # 北京 21:00
   workflow_dispatch:
 
 jobs:
