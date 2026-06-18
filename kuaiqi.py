@@ -119,11 +119,11 @@ def main():
                     if api.is_changing(quote):
                         if mainforce.iloc[-1,1]!=mainforce.iloc[-2,1]:
                             print(f'{item}需要换月，先平仓{mainforce.iloc[-2,1]}，再开仓{mainforce.iloc[-1,1]}')
-                            put=TargetPosTask(api, mainforce.iloc[-2,1])
+                            put=TargetPosTask(api,mainforce.iloc[-2,1],support_open_min_volume=True)
                             put.set_target_volume(0)
                         volume=weights.loc[item,0]*account.get_account().static_balance/(quote.last_price*quote.volume_multiple)
-                        print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
-                        call=TargetPosTask(api, quote.underlying_symbol)
+                        print(f'{quote.underlying_symbol}调仓至{np.round(volume,0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
+                        call=TargetPosTask(api,quote.underlying_symbol,support_open_min_volume=True)
                         call.set_target_volume(np.round(volume,0))
                         sleep(1)
             count=count+1
