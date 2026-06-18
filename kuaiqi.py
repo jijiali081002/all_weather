@@ -105,7 +105,7 @@ def final_weight(pre_leverage, post_leverage, rm, method_cov):
 
 def main():
     cld=api.get_trading_calendar(start_dt=datetime.now()-timedelta(days=3), end_dt=datetime.now())
-    if cld.trading.to_list()[-1]:
+    if cld.trading.to_list()[-1] or (cld.trading.to_list()[-1]==False and datetime.now().hour<5):
         weights=final_weight(True, True, 'MV', 'hist')
         count=0
         while api.wait_update() and count<100:
@@ -147,7 +147,9 @@ api=TqApi(account=account,auth=TqAuth("李嘉骥","all_weather_sim"))
 print('昨日与今日持仓净值：')
 print([account.get_account().pre_balance,account.get_account().balance])
 print('详细持仓：')
-print([account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
+position=account.get_position().items()
+all_positions=pd.DataFrame.from_dict({symbol:dict(pos) for symbol, pos in position},orient='index')
+print(all_positions)
 main()
 api.close()
 print('end')
