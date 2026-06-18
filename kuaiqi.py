@@ -125,8 +125,9 @@ def main():
                         print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
                         call=TargetPosTask(api, quote.underlying_symbol)
                         call.set_target_volume(np.round(volume,0))
+                        sleep(1)
             count=count+1
-            sleep(2)
+            sleep(1)
         blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
         print(blc_pst)
         if datetime.now().hour>15 or datetime.now().hour<5:
