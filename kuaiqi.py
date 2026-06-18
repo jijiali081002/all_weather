@@ -122,9 +122,9 @@ def main():
                             put=TargetPosTask(api, mainforce.iloc[-2,1])
                             put.set_target_volume(0)
                         volume=weights.loc[item,0]*account.get_account().static_balance/(quote.last_price*quote.volume_multiple)
+                        print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
                         call=TargetPosTask(api, quote.underlying_symbol)
                         call.set_target_volume(np.round(volume,0))
-                        print(f'{quote.underlying_symbol}调仓至{np.round(volume, 0)}手，现在持仓{account.get_position(quote.underlying_symbol).volume_long}手')
             count=count+1
             sleep(2)
         blc_pst=[account.get_account().pre_balance]+[account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols]
@@ -147,7 +147,6 @@ print('昨日与今日持仓净值：')
 print([account.get_account().pre_balance,account.get_account().balance])
 print('详细持仓：')
 print([account.get_position(api.get_quote(item).underlying_symbol).pos for item in symbols])
-print([account.get_position()])
 main()
 api.close()
 print('end')
