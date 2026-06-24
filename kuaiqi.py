@@ -92,6 +92,7 @@ def final_weight(pre_leverage, post_leverage, rm, method_cov):
     if pre_leverage:
         for col in final_weights.columns:
             final_weights[col]=final_weights[col]*target_var/np.array(volatility[col][lag_return+1:])
+    print('大类资产实际权重如下：')
     print(final_weights)
     result=pd.DataFrame(np.zeros((len(symbols),1)),index=symbols)
     for i in range(0,3):
@@ -105,10 +106,10 @@ def final_weight(pre_leverage, post_leverage, rm, method_cov):
 
 def main():
     cld=api.get_trading_calendar(start_dt=datetime.now()-timedelta(days=3), end_dt=datetime.now())
-    if cld.trading.to_list()[-1] or (cld.trading.to_list()[-1]==False and datetime.now().hour<5):
+    if cld.trading.to_list()[-1] or (cld.trading.to_list()[-1]==False and datetime.now().hour<3):
         weights=final_weight(True, True, 'MV', 'hist')
         count=0
-        while api.wait_update() and count<100:
+        while api.wait_update() and count<20:
             for item in symbols:
                 try:
                     quote=api.get_quote(item)
@@ -149,7 +150,7 @@ print([account.get_account().pre_balance,account.get_account().balance])
 print('详细持仓：')
 position=account.get_position().items()
 all_positions=pd.DataFrame.from_dict({symbol:dict(pos) for symbol, pos in position},orient='index')
-print(all_positions)
+print(all_positions[["float_profit","position_profit","margin","pos","pos_long"]])
 main()
 api.close()
 print('end')
