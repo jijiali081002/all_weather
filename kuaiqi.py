@@ -10,6 +10,7 @@ import warnings
 warnings.filterwarnings("ignore")
 start=time()
 print('start')
+print(datetime.now())
 lag_return=126
 lag_var=126
 target_var=0.15
@@ -109,7 +110,7 @@ def main():
     if cld.trading.to_list()[-1] or (cld.trading.to_list()[-1]==False and datetime.now().hour<3):
         weights=final_weight(True, True, 'MV', 'hist')
         count=0
-        while api.wait_update() and count<20:
+        while api.wait_update() and count<50:
             for item in symbols:
                 try:
                     quote=api.get_quote(item)
